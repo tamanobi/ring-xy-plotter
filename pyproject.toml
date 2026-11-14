@@ -1,0 +1,34 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ring-plotter"
+version = "0.1.0"
+description = "リング式XYプロッタ用の SVG→G-code 変換とプレビュー"
+requires-python = ">=3.10"
+dependencies = [
+    "numpy",
+    "scipy",
+    "pillow",
+    "matplotlib",
+    "pyserial",
+    "svgelements",
+    "scikit-image",
+]
+
+[project.optional-dependencies]
+dev = ["pytest"]
+refine = ["torch"]  # refine-passes 用。CUDA 版は https://pytorch.org/ の手順で入れる
+
+[project.scripts]
+svg2ring = "ring_plotter.svg2ring:main"
+ring-preview = "ring_plotter.preview:main"
+img2svg = "ring_plotter.img2svg:main"
+refine-passes = "ring_plotter.refine_passes:main"
+
+[tool.setuptools]
+packages = ["ring_plotter"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

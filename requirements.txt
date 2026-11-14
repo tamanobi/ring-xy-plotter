@@ -1,0 +1,9 @@
+numpy
+scipy
+pillow
+matplotlib
+pyserial
+svgelements
+scikit-image
+pytest
+-e .
