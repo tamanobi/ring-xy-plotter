@@ -439,6 +439,10 @@ def pass_counts(width_px: np.ndarray, arclen_px: np.ndarray, pen_px: float, pitc
             if not neigh:
                 continue
             target = min(neigh)
+            if target == v:
+                # 閉じた線で最初と最後の区間が同じ本数だと、つなぎ目の向こうの隣が自分と同じ値になる。
+                # 揃えても何も変わらないので飛ばす（飛ばさないと changed = True のまま止まらない）
+                continue
             if idx in (0, len(runs) - 1) and not closed:
                 # 端の短い区間は、本数が多ければ隣に揃える（入り抜きの細い端はそのまま残す）
                 if v <= target:

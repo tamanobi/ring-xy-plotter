@@ -183,6 +183,24 @@ def test_pass_counts_drops_short_runs():
     assert n[40:].tolist() == [1] * 20  # 端の細い区間は残る
 
 
+def test_pass_counts_closed_with_same_end_runs_terminates():
+    """閉じた線で、短い最初の区間がつなぎ目の向こうの最後の区間と同じ本数でも、止まらずに終わる。"""
+    import threading
+
+    from ring_plotter.raster import pass_counts
+
+    w = np.full(26, 5.2)  # pen 2, pitch 1.6 → 3 本
+    w[:3] = w[-3:] = 2.0  # 最初と最後は 1 本。最初の区間は短く、つなぎ目の向こうの最後の区間と同じ本数
+    arclen = np.arange(26, dtype=float)
+    out = []
+    t = threading.Thread(target=lambda: out.append(
+        pass_counts(w, arclen, pen_px=2.0, pitch_px=1.6, min_run_px=6, closed=True)), daemon=True)
+    t.start()
+    t.join(timeout=5)
+    assert out, "pass_counts が 5 秒で終わらない"
+    assert out[0].tolist() == [1] * 3 + [3] * 20 + [1] * 3  # 端の細い区間はそのまま残る
+
+
 def test_multipass_straight_thick_line():
     img = canvas()
     draw_line(img, (20, 60), (140, 60), 9)
